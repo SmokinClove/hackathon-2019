@@ -13,7 +13,6 @@ function addClick(x, y, dragging) {
     } else {
         drawingData.push([]);
     }
-    // clickDrag.push(dragging);
 }
 
 function redraw() {
@@ -45,13 +44,13 @@ function clear() {
 }
 
 function sendToBE() {
-    fetch('http://localhost:8080/api/infer', {
+    fetch('http://localhost:8080/api/debug', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
         },
         body: JSON.stringify({id: 'somestring',shapes: drawingData})
-    }).then(response => console.log(response));
+    }).then(response => response.json()).then(result => console.log(result));
 }
 
 async function app() {
