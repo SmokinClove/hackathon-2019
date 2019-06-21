@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { fetchShapeType } from './redux/shape/action';
+import './Draw.css';
 
 const debounced = (fn, timeout) => {
   let timeoutHandler = null;
@@ -18,6 +19,7 @@ class Draw extends React.Component {
     super(props);
     this.canvas = React.createRef();
     this.downloadBtn= React.createRef();
+    this.hiddenCanvas = React.createRef();
     this.obj = []; // an Array of Array of Points, which is the object to draw
     this.currentLine = []; // Stores an array of Points, which is the current line being drawn
   }
@@ -25,7 +27,7 @@ class Draw extends React.Component {
   formObject = debounced(() => {
     const timestamp = new Date().getTime();
     if (!this.paint && this.obj.length !== 0) {
-      this.props.fetchShapeType(timestamp, this.obj)
+      this.props.fetchShapeType(timestamp, this.obj, this.hiddenCanvas.current)
     }
     this.obj = [];
   }, 2000);
@@ -35,6 +37,7 @@ class Draw extends React.Component {
     var clickY = [];
     var clickDrag = [];
     var context;
+    var hiddenContext;
     var self = this;
 
     const addClick = (x, y, dragging) => {
@@ -44,13 +47,10 @@ class Draw extends React.Component {
       clickDrag.push(dragging);
     }
 
-    const redraw = () => {
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
-
+    const drawOnContext = (context) => {
       context.strokeStyle = "#111";
       context.lineJoin = "round";
       context.lineWidth = 5;
-
       for (var i = 0; i < clickX.length; i++) {
         context.beginPath();
         if (clickDrag[i] && i) {
@@ -64,10 +64,23 @@ class Draw extends React.Component {
       }
     }
 
+    const redraw = () => {
+      context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+
+      drawOnContext(context);
+
+      hiddenContext.fillStyle = "white";
+      hiddenContext.fillRect(0, 0, hiddenContext.canvas.width, hiddenContext.canvas.height);
+      drawOnContext(hiddenContext);
+    }
+
 
     if(!this.canvas) return;
     const canvas = this.canvas.current;
     context = canvas.getContext("2d");
+
+    const hiddenCanvas = this.hiddenCanvas.current;
+    hiddenContext = hiddenCanvas.getContext('2d');
     canvas.addEventListener("mousedown", function (e) {
       self.paint = true;
       addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
@@ -110,6 +123,7 @@ class Draw extends React.Component {
   render() {
     return <div id="playground" className="playground">
       <canvas id="canvasInAPerfectWorld" width={window.innerWidth/2} height={window.innerHeight/2} style={{border: "black 1px solid" }} ref={this.canvas}></canvas>
+      <canvas id="backdropInvisibleCanvas" width={window.innerWidth/2} height={window.innerHeight/2} ref={this.hiddenCanvas}></canvas>
     </div>
   }
 }
