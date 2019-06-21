@@ -121,11 +121,12 @@ const mobileNet = {
                     };
                 }).filter(item => shapes.has(item.name));
                 let autodrawFinal;
-                console.log(filteredResults, filteredResults.findIndex(item => specialShapes.has(item.name)));
+                // console.log(filteredResults, filteredResults.findIndex(item => specialShapes.has(item.name)));
                 if (filteredResults.findIndex(item => specialShapes.has(item.name)) !== -1) {
                     //handle arrow here
-                    const prediction = await identifyArrow(received.data);
-                    autodrawFinal = { id: received.id, results: [prediction] };
+                    const { label } = await identifyArrow;
+                    // const prediction = label;
+                    autodrawFinal = { id: received.id, results: [label] };
                 } else {
                     if (filteredResults.length > 1) {
                         
