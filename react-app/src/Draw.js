@@ -1,21 +1,40 @@
 import React from 'react';
 
+/*
+Point : {x : number, y: number}
+ */
 export default class Draw extends React.Component {
-  var clickX = new Array();
-  var clickY = new Array();
-  var clickDrag = new Array();
-  var paint;
-  componentDidMount() {
-    app();
+  constructor(props) {
+    super(props);
+    this.canvas = React.createRef();
+    this.obj = []; // an Array of Array of Points, which is the object to draw
+    this.currentLine = []; // Stores an array of Points, which is the current line being drawn
+    setInterval(this.formObject, 2000);
   }
 
-  function addClick(x, y, dragging) {
+  formObject = () => {
+    // TODO: send to api and refresh the this.obj
+    console.log('obj ', this.obj);
+    const timestamp = new Date().getTime();
+    // getImage(timestamp, this.obj)
+    this.obj = [];
+  }
+
+  componentDidMount() {
+    var clickX = [];
+    var clickY = [];
+    var clickDrag = [];
+    var paint, context;
+    var self = this;
+
+    const addClick = (x, y, dragging) => {
       clickX.push(x);
       clickY.push(y);
+      this.currentLine.push({x, y});
       clickDrag.push(dragging);
-  }
+    }
 
-  function redraw() {
+    const redraw = () => {
       context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
 
       context.strokeStyle = "#111";
@@ -23,53 +42,47 @@ export default class Draw extends React.Component {
       context.lineWidth = 5;
 
       for (var i = 0; i < clickX.length; i++) {
-          context.beginPath();
-          if (clickDrag[i] && i) {
-              context.moveTo(clickX[i - 1], clickY[i - 1]);
-          } else {
-              context.moveTo(clickX[i] - 1, clickY[i]);
-          }
-          context.lineTo(clickX[i], clickY[i]);
-          context.closePath();
-          context.stroke();
+        context.beginPath();
+        if (clickDrag[i] && i) {
+          context.moveTo(clickX[i - 1], clickY[i - 1]);
+        } else {
+          context.moveTo(clickX[i] - 1, clickY[i]);
+        }
+        context.lineTo(clickX[i], clickY[i]);
+        context.closePath();
+        context.stroke();
       }
+    }
+
+
+    if(!this.canvas) return;
+    const canvas = this.canvas.current;
+    context = canvas.getContext("2d");
+    canvas.addEventListener("mousedown", function (e) {
+      paint = true;
+      addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
+      redraw();
+    })
+
+    canvas.addEventListener("mousemove", function (e) {
+      if (paint) {
+        addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
+        redraw();
+      }
+    });
+
+    canvas.addEventListener("mouseup", function(e){
+      paint = false;
+      if(!!self.currentLine && self.currentLine.length > 0)self.obj.push(self.currentLine);
+      self.currentLine = [];
+    });
+
+    canvas.addEventListener("mouseleave", function (e) {
+      paint = false;
+    });
   }
 
-  function clear() {
-      clickX = new Array();
-      clickY = new Array();
-      clickDrag = new Array();
-      context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+  render() {
+    return  <div><canvas id="canvasInAPerfectWorld" width="600" height="600" style={{border: "black 1px solid"}} ref={this.canvas}></canvas></div>
   }
-
-  async function app() {
-      const canvas = document.getElementById('canvasInAPerfectWorld');
-      context = canvas.getContext("2d");
-      console.log('createdContext');
-      canvas.addEventListener("mousedown", function (e) {
-          var mouseX = e.pageX - this.offsetLeft;
-          var mouseY = e.pageY - this.offsetTop;
-
-          paint = true;
-          addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-          redraw();
-      })
-
-      canvas.addEventListener("mousemove", function (e) {
-          if (paint) {
-              addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
-              redraw();
-          }
-      });
-
-      canvas.addEventListener("mouseup", function(e){
-          paint = false;
-      })
-
-      canvas.addEventListener("mouseleave", function (e) {
-          paint = false;
-      });
-
-  }
-  return <canvas id="canvasInAPerfectWorld" width="220" height="220" style="border: black 1px solid;"></canvas>;
 }
