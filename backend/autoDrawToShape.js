@@ -5,6 +5,9 @@ const autoDrawToShape = {
 export const specialExpectedShapes = [
     'arrow',
     'line',
+    'square',
+    'diamond',
+    'triangle',
 ]
 
 export const adjustedExpectedShapes = [

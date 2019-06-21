@@ -54,17 +54,65 @@ const classify = (directory, classname) => {
     console.log(classname + 'classified');
 }
 
+function saveknn(filename) {
+    let dataset = classifier.getClassifierDataset()
+    var datasetObj = {}
+    Object.keys(dataset).forEach((key) => {
+        let data = dataset[key].dataSync();
+        // use Array.from() so when JSON.stringify() it covert to an array string e.g [0.1,-0.2...] 
+        // instead of object e.g {0:"0.1", 1:"-0.2"...}
+        datasetObj[key] = Array.from(data);
+    });
+    let jsonStr = JSON.stringify(datasetObj)
+    //can be change to other source
+    // console.log(jsonStr)
+    // localStorage.setItem("myData", jsonStr);
+    fs.writeFile(filename, jsonStr, function (err) {
+        if (err) {
+            return console.log(err);
+        }
+
+        console.log("The file was saved!");
+    }); 
+}
+async function loadknn(filename) {
+    const rawdata = await fs.readFileSync(filename);
+    console.log('loaded file', rawdata);
+    let tensorObj = JSON.parse(rawdata)
+    console.log(tensorObj)
+    //covert back to tensor
+    Object.keys(tensorObj).forEach((key) => {
+        tensorObj[key] = tf.tensor(tensorObj[key], [tensorObj[key].length / 1024, 1024])
+    })
+    classifier.setClassifierDataset(tensorObj);
+    console.log('classifier load success')
+}
 
 mobilenet.load().then(item => {
     // eslint-disable-next-line no-console
     console.log('mobilenetLoaded');
     model = item;
-
-    classify(__dirname + '/rarrowsettest', 'rArrow');
-    classify(__dirname + '/uarrowsettest', 'uArrow');
-    classify(__dirname + '/darrowsettest', 'dArrow');
-    classify(__dirname + '/larrowsettest', 'lArrow');
-    // model.save('./trainedmodel');
+    const filename = 'knnmodel.json'
+    if (!fs.existsSync(filename)) {
+        loadknn('knnmodela.json').then(() => {
+            classify(__dirname + '/square', 'square');
+            classify(__dirname + '/diamond', 'diamond');
+            classify(__dirname + '/triangle', 'triangle');
+            saveknn(filename);
+        });
+        // classify(__dirname + '/rarrowset', 'rArrow');
+        // classify(__dirname + '/uarrowset', 'uArrow');
+        // classify(__dirname + '/darrowset', 'dArrow');
+        // classify(__dirname + '/larrowset', 'lArrow');
+        // classify(__dirname + '/ldArrow', 'ldArrow');
+        // classify(__dirname + '/luArrow', 'luArrow');
+        // classify(__dirname + '/rdArrow', 'rdArrow');
+        // classify(__dirname + '/ruArrow', 'ruArrow');
+    } else {
+        loadknn(filename);
+    }
+       
+    
     // Get the activation from mobilenet from the webcam.
 });
 
@@ -99,6 +147,8 @@ async function identifyArrow(data) {
     let result = await classifier.predictClass(activation);
     
     console.log('classification results:', result);
+    const filename = 'knnmodel.json'
+    // saveknn(filename);
     return result;
 }
 
@@ -127,7 +177,6 @@ const mobileNet = {
                     //handle arrow here
                     const prediction = await identifyArrow(received.data);
                     const { label } = prediction;
-                    console.log(label, prediction)
                     autodrawFinal = { id: received.id, results: [label] };
                 } else {
                     if (filteredResults.length > 1) {
