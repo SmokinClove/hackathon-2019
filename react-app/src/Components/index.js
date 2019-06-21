@@ -65,6 +65,13 @@ function createUpArrow(x1, y1, x2, y2) {
 	return group;
 }
 
+export const functionMapping = {
+	square: 'addRect',
+	circle: 'addCircle',
+	diamond: 'addDiamond',
+	triangle: 'addTriangle',
+}
+
 export default class Component {
   constructor() {
     if (!canvas) {
@@ -75,13 +82,13 @@ export default class Component {
     }
   }
 
-  /**
-   *
-   * @param {number} x1 Top-left x1
-   * @param {number} y1 Top-left y1
-   * @param {number} x2 Bottom-right x2
-   * @param {number} y2 Bottom-right y2
-   */
+	/**
+	 *
+	 * @param {number} x1 Top-left x1
+	 * @param {number} y1 Top-left y1
+	 * @param {number} x2 Bottom-right x2
+	 * @param {number} y2 Bottom-right y2
+	 */
   addRect(x1, y1, x2, y2) {
     const width = x2 - x1,
       height = y2 - y1;
@@ -97,26 +104,27 @@ export default class Component {
   }
 
   addCircle(x1, y1, x2, y2) {
-    const radius = Math.min(x2 - x1, y1 - y2) / 2;
-    const circle = new fabric.Circle({
-      left: x1,
-      top: y1,
-      radius,
-      ...inlineProperties
-    });
-    canvas.add(circle);
-    return this;
-  }
+		const radius = Math.min(x2 - x1, y2 - y1) / 2;
+		const circle = new fabric.Circle({
+			left: x1,
+			top: y1,
+			radius,
+			...inlineProperties
+		});
+		canvas.add(circle);
+		return this;
+	}
 
   addTriangle(x1, y1, x2, y2) {
-    const triangle = new fabric.Triangle({
-      width: x2 - x1,
-      height: y1 - y2,
-      left: x1,
-      top: y1,
-      ...inlineProperties
-    }).set("flipY", true);
-    canvas.add(triangle);
+		const triangle = new fabric.Triangle({
+			width: x2 - x1,
+			height: y2 - y1,
+			left: x1,
+			top: y1,
+			...inlineProperties
+		})
+		.set('flipY', true);
+		canvas.add(triangle);
     return this;
   }
 
@@ -179,7 +187,16 @@ export default class Component {
 		const group = createUpArrow(x1, y1, x2, y2).set("flipY", true);
 		canvas.add(group);
 		return this;
-	}
+  }
+
+  addInput(x1, y1) {
+    canvas.add(new fabric.IText('Tap and Type', { 
+      fontFamily: 'arial black',
+      fontWeight: 'normal',
+      left: x1, 
+      top: y1,
+    }));
+  }
 
 	addRightArrow(x1, y1, x2, y2) {
 		const group = createRightArrow(x1, y1, x2, y2);

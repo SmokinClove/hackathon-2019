@@ -2,6 +2,11 @@ const autoDrawToShape = {
     'arrow' : 'arrow',
 }
 
+export const specialExpectedShapes = [
+    'arrow',
+    'line',
+]
+
 export const adjustedExpectedShapes = [
     'rArrow',
     'arrow',

@@ -4,8 +4,8 @@ export {
 
 const END_POINT = 'http://tenzhiyang.com:8080/api/infer';
 
-function fetchShapeTypeAPI(id, arrayOfArrayOfPoint) {
-  return fetch(END_POINT, { // TODO: @James Fine grain this fetch
+async function fetchShapeTypeAPI(id, arrayOfArrayOfPoint, data) {
+  const response = await fetch(END_POINT, {
     method: 'POST',
     mode: 'cors',
     headers: {
@@ -14,6 +14,8 @@ function fetchShapeTypeAPI(id, arrayOfArrayOfPoint) {
     body: JSON.stringify({
       id,
       shapes: arrayOfArrayOfPoint,
+      data,
     }),
   })
+  return response.json();
 }
