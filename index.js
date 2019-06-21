@@ -43,13 +43,14 @@ function clear() {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 }
 
-function sendToBE() {
-    fetch('http://localhost:8080/api/debug', {
+function sendToBE(dataUrl) {
+
+    fetch('http://localhost:8080/api/infer', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({id: 'somestring',shapes: drawingData})
+        body: JSON.stringify({ id: 'somestring', shapes: drawingData, data: dataUrl})
     }).then(response => response.json()).then(result => console.log(result));
 }
 
@@ -86,7 +87,7 @@ async function app() {
 
     // When clicking a button, add an example for that class.
     document.getElementById('clear').addEventListener('click', () => clear());
-    document.getElementById('sendtobackend').addEventListener('click', () => sendToBE());
+    document.getElementById('sendtobackend').addEventListener('click', () => sendToBE(canvas.toDataURL("image/jpeg")));
 }
 
 app();
