@@ -1,6 +1,7 @@
 import React from 'react';
 import Components from './Components';
 import Draw from './Draw';
+import './App.css';
 
 function App() {
   const canvas = new Components();
