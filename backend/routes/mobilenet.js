@@ -6,7 +6,10 @@ import * as mobilenet from '@tensorflow-models/mobilenet'
 
 let model;
 
-mobilenet.load().then(item => model = item);
+mobilenet.load().then(item => {
+    console.log('mobilenetLoaded');
+    model = item;
+});
 
 const shape1 = [
     {
@@ -25,7 +28,7 @@ const testShapes = [
 
 const shapes = new Set(adjustedExpectedShapes);
 async function identifyArrow() {
-    console.log('identifyArrow');
+    
     return 'blah';
 }
 
