@@ -103,7 +103,7 @@ class Draw extends React.Component {
     link.addEventListener('click', function(ev) {
       const canvas=self.canvas.current;
       link.href = canvas.toDataURL();
-      link.download = "mypainting.png";
+      link.download = "mydiagram.png";
     }, false);
     document.getElementById("playground").appendChild(link);
   }
