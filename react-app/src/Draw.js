@@ -26,7 +26,7 @@ class Draw extends React.Component {
     console.log('obj ', this.obj);
     const timestamp = new Date().getTime();
     if (!this.paint || this.obj.length !== 0) {
-      this.props.fetchShapeType(timestamp, [])
+      this.props.fetchShapeType(timestamp, this.obj)
     }
     // getImage(timestamp, this.obj)
     this.obj = [];
