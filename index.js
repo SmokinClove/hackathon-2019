@@ -17,11 +17,13 @@ function addClick(x, y, dragging) {
 
 function redraw() {
     context.clearRect(0, 0, context.canvas.width, context.canvas.height); // Clears the canvas
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 
     context.strokeStyle = "#111";
     context.lineJoin = "round";
     context.lineWidth = 5;
-
+    
     for (var j=0; j< drawingData.length; j++) {
         const line = drawingData[j];
         for (var i = 0; i < line.length; i++) {
@@ -41,16 +43,27 @@ function clear() {
     drawingData = new Array();
     numLines = 0;
     context.clearRect(0, 0, context.canvas.width, context.canvas.height);
+    context.fillStyle = "#fff";
+    context.fillRect(0, 0, context.canvas.width, context.canvas.height);
 }
 
-function sendToBE(dataUrl) {
+function sendToBE(imageData) {
+    // window.location.href = dataUrl.replace("image/jpeg", "image/octet-stream");
+    console.log(imageData)
+    const tosendData = Array();
+
+    const tosend = {
+        data: [...imageData.data],
+        width: imageData.width,
+        height: imageData.height,
+    }
 
     fetch('http://localhost:8080/api/infer', {
         method: 'post',
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ id: 'somestring', shapes: drawingData, data: dataUrl})
+        body: JSON.stringify({ id: 'somestring', shapes: drawingData, data: tosend})
     }).then(response => response.json()).then(result => console.log(result));
 }
 
@@ -87,7 +100,7 @@ async function app() {
 
     // When clicking a button, add an example for that class.
     document.getElementById('clear').addEventListener('click', () => clear());
-    document.getElementById('sendtobackend').addEventListener('click', () => sendToBE(canvas.toDataURL("image/jpeg")));
+    document.getElementById('sendtobackend').addEventListener('click', () => sendToBE(context.getImageData(0, 0, 220, 220)));
 }
 
 app();

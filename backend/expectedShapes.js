@@ -23,4 +23,5 @@ const expectedShapes = [
     'ccwBotArrow',
     'cwsqTopArrow'
 ];
+
 export default expectedShapes;

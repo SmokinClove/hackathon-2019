@@ -14,6 +14,7 @@
     "@tensorflow-models/mobilenet": "^1.0.1",
     "@tensorflow/tfjs": "^1.2.1",
     "@tensorflow/tfjs-node": "^1.2.1",
+    "atob": "^2.1.2",
     "autodraw": "^0.1.0",
     "body-parser": "^1.19.0",
     "cors": "^2.8.5",
