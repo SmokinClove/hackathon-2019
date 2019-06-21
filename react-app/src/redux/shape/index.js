@@ -55,7 +55,7 @@ export default (state = initialState, action) => {
       ...state,
       [action.payload.key]: {
         ...state[action.payload.key],
-        name: results.length ? results[0].name : '',
+        name: results.length ? results[0].name ? results[0].name : results[0] : '',
         suggestions: results,
         state: FETCHING_STATES.FINAL, // NOTE: @James If we consider suggesting, then change this state to SUGGESTING, write more action and selectors.
       }

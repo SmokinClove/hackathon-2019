@@ -1,6 +1,6 @@
 import React from 'react';
-import './App.css';
 import Draw from './Draw';
+import './App.css';
 
 function App() {
   return (
