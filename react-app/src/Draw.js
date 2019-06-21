@@ -5,11 +5,15 @@ import Components, { functionMapping } from './Components';
 import { getFinalizedShapes } from './redux/shape/selector';
 import './App.css';
 
-const debounced = (fn, timeout) => {
+function debounced (fn, timeout) {
   let timeoutHandler = null;
   return function() {
+    const context = this;
+    const args = arguments;
     clearTimeout(timeoutHandler);
-    timeoutHandler = setTimeout(fn, timeout);
+    timeoutHandler = setTimeout(function() {
+      fn.apply(context, args);
+    }, timeout);
   };
 };
 /*
@@ -43,15 +47,18 @@ class Draw extends React.Component {
     this.obj = [];
   }, 2000);
 
+  keyboardListener = e => {
+    if (e.key === 'w' /* to draw */) this.setState({ isDrawingMode: true });
+    if (e.key === 'q' /* to view */) this.setState({ isDrawingMode: false });
+    if (['Backspace', 'Delete'].includes(e.key)) this.canvas2.remove();
+  }
+
   componentDidMount() {
     var context;
     var hiddenContext;
     var self = this;
     this.canvas2 = new Components();
-    document.addEventListener('keypress', e => {
-      if (e.key === 'w' /* to draw */) self.setState({ isDrawingMode: true });
-      if (e.key === 'q' /* to view */) self.setState({ isDrawingMode: false });
-    });
+    document.addEventListener('keydown', this.keyboardListener);
 
     const addClick = (x, y, dragging) => {
       this.clickX.push(x);

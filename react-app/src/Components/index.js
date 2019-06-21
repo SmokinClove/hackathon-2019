@@ -242,7 +242,9 @@ export default class Component {
 	}
 
   remove() {
+		console.log(123);
     canvas.getActiveObjects().forEach(obj => {
+			console.log(obj);
       canvas.remove(obj);
     });
     canvas.discardActiveObject().renderAll();
