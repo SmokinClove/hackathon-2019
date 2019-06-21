@@ -39,10 +39,10 @@ const mobileNet = {
                         confidence: item.confidence
                     };
                 }).filter(item => shapes.has(item.name));
-                filteredResults = filteredResults.length > 1 ? filteredResults.reduce(function (a, b) {
+                filteredResults = filteredResults.length > 1 ? [filteredResults.reduce(function (a, b) {
                     const higherConfidence = Math.max(a.confidence, b.confidence)
                     return a.confidence === higherConfidence ? a : b;
-                }) : filteredResults;
+                })] : filteredResults;
                 res.json({ id: received.id, results: filteredResults });
             } else {
                 res.json({id: received.id, results: []});
