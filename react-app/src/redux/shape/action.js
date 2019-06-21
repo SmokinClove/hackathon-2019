@@ -11,7 +11,7 @@ export {
  */
 
 const IMAGE_SIZE = 220;
-async function scaledDownDataUrl(canvas, boundingRect) {
+async function getImageData(canvas, boundingRect) {
   const context = canvas.getContext('2d');
   const { left, top, right, bottom} = boundingRect;
   const width = right - left;
@@ -43,7 +43,8 @@ async function scaledDownDataUrl(canvas, boundingRect) {
       newContext.scale(scaledFactor, scaledFactor);
       newContext.drawImage(imageObject, 0, 0);
       context.clearRect(0, 0, canvas.width, canvas.height);
-      resolve(newCanvas.toDataURL('image/jpeg'));
+
+      resolve(newContext.getImageData(0, 0, IMAGE_SIZE, IMAGE_SIZE));
     }
     imageObject.src = imageDataURL;
   })
@@ -70,7 +71,12 @@ function fetchShapeType(timeStamp, arrayOfArrayOfPoint, canvas) {
     });
 
     try {
-      let result = await fetchShapeTypeAPI(timeStamp, arrayOfArrayOfPoint, await scaledDownDataUrl(canvas, boundingRect));
+      const imageData = await getImageData(canvas, boundingRect);
+      let result = await fetchShapeTypeAPI(timeStamp, arrayOfArrayOfPoint, {
+        data: [...imageData.data],
+        width: imageData.width,
+        height: imageData.height
+      });
       dispatch({
         type: FETCH_SHAPE_TYPE.SUCCESS,
         payload: {
