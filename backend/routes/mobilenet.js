@@ -44,7 +44,7 @@ const mobileNet = {
                 const higherConfidence = Math.max(a.confidence, b.confidence)
                 return a.confidence === higherConfidence ? a : b;
             });
-            res.json({result: filteredResults});
+            res.json([filteredResults]);
         })();
     },
     debug: (req, res) => {
@@ -59,7 +59,7 @@ const mobileNet = {
                 };
             });
             
-            res.json({ result: filteredResults });
+            res.json(filteredResults);
         })();
     }
 }
