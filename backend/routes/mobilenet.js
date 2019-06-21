@@ -38,8 +38,9 @@ const imageToInput = (image, numChannels) => {
 
 const classify = (directory, classname) => {
     const files = fs.readdirSync(directory);
-    // console.log(directory)
     for (let i=0; i<files.length; i++) {
+
+        // eslint-disable-next-line no-console
         console.log(directory + '/' + files[i], files[i].slice(-4) );
         if (files[i].slice(-4) === '.jpg'){
             const buf = fs.readFileSync(directory + '/' + files[i]);
@@ -48,9 +49,13 @@ const classify = (directory, classname) => {
             const activation = model.infer(input, 'conv_preds');
             // Pass the intermediate activation to the classifier.
             classifier.addExample(activation, classname);
+
+            // eslint-disable-next-line no-console
             console.log('classifying' + files[i]);
         }
     }
+
+    // eslint-disable-next-line no-console
     console.log(classname + 'classified');
 }
 
@@ -69,23 +74,26 @@ function saveknn(filename) {
     // localStorage.setItem("myData", jsonStr);
     fs.writeFile(filename, jsonStr, function (err) {
         if (err) {
+
+            // eslint-disable-next-line no-console
             return console.log(err);
         }
 
+        // eslint-disable-next-line no-console
         console.log("The file was saved!");
     }); 
 }
 async function loadknn(filename) {
     const rawdata = await fs.readFileSync(filename);
-    console.log('loaded file', rawdata);
-    let tensorObj = JSON.parse(rawdata)
-    console.log(tensorObj)
+    let tensorObj = JSON.parse(rawdata);
     //covert back to tensor
     Object.keys(tensorObj).forEach((key) => {
         tensorObj[key] = tf.tensor(tensorObj[key], [tensorObj[key].length / 1024, 1024])
     })
     classifier.setClassifierDataset(tensorObj);
-    console.log('classifier load success')
+
+    // eslint-disable-next-line no-console
+    console.log('classifier load success');
 }
 
 mobilenet.load().then(item => {
@@ -94,12 +102,12 @@ mobilenet.load().then(item => {
     model = item;
     const filename = 'knnmodel.json'
     if (!fs.existsSync(filename)) {
-        loadknn('knnmodela.json').then(() => {
-            classify(__dirname + '/square', 'square');
-            classify(__dirname + '/diamond', 'diamond');
-            classify(__dirname + '/triangle', 'triangle');
-            saveknn(filename);
-        });
+        // loadknn('knnmodela.json').then(() => {
+        //     classify(__dirname + '/square', 'square');
+        //     classify(__dirname + '/diamond', 'diamond');
+        //     classify(__dirname + '/triangle', 'triangle');
+        //     saveknn(filename);
+        // });
         // classify(__dirname + '/rarrowset', 'rArrow');
         // classify(__dirname + '/uarrowset', 'uArrow');
         // classify(__dirname + '/darrowset', 'dArrow');
@@ -108,6 +116,7 @@ mobilenet.load().then(item => {
         // classify(__dirname + '/luArrow', 'luArrow');
         // classify(__dirname + '/rdArrow', 'rdArrow');
         // classify(__dirname + '/ruArrow', 'ruArrow');
+        console.log('please load a model before running');
     } else {
         loadknn(filename);
     }
