@@ -18,8 +18,8 @@ export default class Component {
   constructor() {
     if (!canvas) {
       canvas = new fabric.Canvas("thisStringIsTheCanvasId", {
-        height: window.innerHeight/2,
-        width: window.innerWidth/2,
+        height: window.innerHeight,
+        width: window.innerWidth,
       });
     }
   }

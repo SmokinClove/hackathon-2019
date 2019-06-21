@@ -168,9 +168,9 @@ class Draw extends React.Component {
   render() {
     return <div id="playground" className="playground" style={{position: 'relative'}}>
       <div style={{height:"50px"}}>{this.state.isDrawingMode ? 'Draw mode' : 'View Mode'}</div>
-      <canvas id="canvasInAPerfectWorld" width={window.innerWidth/2} height={window.innerHeight/2} style={{display: this.state.isDrawingMode ? 'block' : 'none', border: "black 1px solid", position: 'absolute', top: '50px', zIndex: !this.state.isDrawingMode ? 0 : 2}} ref={this.canvas}></canvas>
-      <canvas id="thisStringIsTheCanvasId" width={window.innerWidth/2} height={window.innerHeight/2} style={{border: "1px solid green", zIndex: !this.state.isDrawingMode ? 2 : 0}}></canvas>
-      <canvas id="backdropInvisibleCanvas" width={window.innerWidth/2} height={window.innerHeight/2} ref={this.hiddenCanvas}></canvas>
+      <canvas id="canvasInAPerfectWorld" width={window.innerWidth} height={window.innerHeight} style={{display: this.state.isDrawingMode ? 'block' : 'none', border: "black 1px solid", position: 'absolute', top: '50px', zIndex: !this.state.isDrawingMode ? 0 : 2}} ref={this.canvas}></canvas>
+      <canvas id="thisStringIsTheCanvasId" width={window.innerWidth} height={window.innerHeight} style={{border: "1px solid green", zIndex: !this.state.isDrawingMode ? 2 : 0}}></canvas>
+      <canvas id="backdropInvisibleCanvas" width={window.innerWidth} height={window.innerHeight} ref={this.hiddenCanvas}></canvas>
     </div>
   }
 }
