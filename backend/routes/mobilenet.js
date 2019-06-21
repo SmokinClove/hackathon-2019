@@ -1,7 +1,7 @@
 
 
 import autodraw from 'autodraw';
-import expectedShapes from '../expectedShapes';
+import { adjustedExpectedShapes } from '../autoDrawToShape';
 
 const shape1 = [
     {
@@ -18,7 +18,7 @@ const testShapes = [
     shape1
 ]
 
-const shapes = new Set(expectedShapes);
+const shapes = new Set(adjustedExpectedShapes);
 
 const mobileNet = {
     log:(req, res) => {
