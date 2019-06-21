@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getBoundingBox shoulds give right output 1`] = `
+Object {
+  "bottom": -Infinity,
+  "left": Infinity,
+  "right": -Infinity,
+  "top": Infinity,
+}
+`;
+
+exports[`getBoundingBox shoulds give right output 2`] = `
+Object {
+  "bottom": -Infinity,
+  "left": Infinity,
+  "right": -Infinity,
+  "top": Infinity,
+}
+`;
+
+exports[`getBoundingBox shoulds give right output 3`] = `
+Object {
+  "bottom": 2,
+  "left": 1,
+  "right": 2,
+  "top": 1,
+}
+`;
+
+exports[`getBoundingBox shoulds give right output 4`] = `
+Object {
+  "bottom": 100,
+  "left": 0,
+  "right": 100,
+  "top": -1,
+}
+`;
+
+exports[`getBoundingBox shoulds give right output 5`] = `
+Object {
+  "bottom": 102,
+  "left": -10,
+  "right": 101,
+  "top": -1,
+}
+`;

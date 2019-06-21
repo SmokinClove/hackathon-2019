@@ -1,30 +1,42 @@
 import React from 'react';
+import { connect } from 'react-redux';
+import { fetchShapeType } from './redux/shape/action';
 
+const debounded = (fn, timeout) => {
+  let timeoutHandler = null;
+  return function() {
+    clearTimeout(timeoutHandler);
+    timeoutHandler = setTimeout(fn, timeout);
+  }
+}
 /*
 Point : {x : number, y: number}
  */
-export default class Draw extends React.Component {
+class Draw extends React.Component {
+  paint = false;
   constructor(props) {
     super(props);
     this.canvas = React.createRef();
     this.obj = []; // an Array of Array of Points, which is the object to draw
     this.currentLine = []; // Stores an array of Points, which is the current line being drawn
-    setInterval(this.formObject, 2000);
   }
 
-  formObject = () => {
+  formObject = debounded(() => {
     // TODO: send to api and refresh the this.obj
     console.log('obj ', this.obj);
     const timestamp = new Date().getTime();
+    if (!this.paint || this.obj.length !== 0) {
+      this.props.fetchShapeType(timestamp, [])
+    }
     // getImage(timestamp, this.obj)
     this.obj = [];
-  }
+  }, 1000);
 
   componentDidMount() {
     var clickX = [];
     var clickY = [];
     var clickDrag = [];
-    var paint, context;
+    var context;
     var self = this;
 
     const addClick = (x, y, dragging) => {
@@ -59,26 +71,29 @@ export default class Draw extends React.Component {
     const canvas = this.canvas.current;
     context = canvas.getContext("2d");
     canvas.addEventListener("mousedown", function (e) {
-      paint = true;
+      self.paint = true;
       addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
       redraw();
     })
 
     canvas.addEventListener("mousemove", function (e) {
-      if (paint) {
+      if (self.paint) {
         addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
         redraw();
       }
     });
 
     canvas.addEventListener("mouseup", function(e){
-      paint = false;
+      self.paint = false;
       if(!!self.currentLine && self.currentLine.length > 0)self.obj.push(self.currentLine);
       self.currentLine = [];
+      self.formObject();
     });
 
     canvas.addEventListener("mouseleave", function (e) {
-      paint = false;
+      if (self.paint) {
+        self.formObject()
+      }
     });
   }
 
@@ -86,3 +101,15 @@ export default class Draw extends React.Component {
     return  <div><canvas id="canvasInAPerfectWorld" width="600" height="600" style={{border: "black 1px solid"}} ref={this.canvas}></canvas></div>
   }
 }
+
+const mapStateToProps = state => {
+  return {
+    shape: state.shape,
+  };
+}
+export default connect(
+  mapStateToProps,
+  {
+    fetchShapeType
+  }
+)(Draw);
