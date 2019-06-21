@@ -2,6 +2,11 @@
 
 import autodraw from 'autodraw';
 import { adjustedExpectedShapes } from '../autoDrawToShape';
+import * as mobilenet from '@tensorflow-models/mobilenet'
+
+let model;
+
+mobilenet.load().then(item => model = item);
 
 const shape1 = [
     {
@@ -19,6 +24,10 @@ const testShapes = [
 ]
 
 const shapes = new Set(adjustedExpectedShapes);
+async function identifyArrow() {
+    console.log('identifyArrow');
+    return 'blah';
+}
 
 const mobileNet = {
     log:(req, res) => {
@@ -39,16 +48,18 @@ const mobileNet = {
                         confidence: item.confidence
                     };
                 }).filter(item => shapes.has(item.name));
+                let autodrawFinal;
                 if (filteredResults.length > 1) {
                     filteredResults = filteredResults.reduce(function (a, b) {
                         const higherConfidence = Math.max(a.confidence, b.confidence)
                         return a.confidence === higherConfidence ? a : b;
                     })
-                    res.json({ id: received.id, results: [filteredResults] });
+                    autodrawFinal = { id: received.id, results: [filteredResults] };
                 } else {
-                    res.json({ id: received.id, results: filteredResults });
+                    autodrawFinal = { id: received.id, results: filteredResults };
                 }
-                
+                console.log(await identifyArrow());
+                res.json(autodrawFinal)
             } else {
                 res.json({id: received.id, results: []});
             }
