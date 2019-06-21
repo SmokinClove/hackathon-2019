@@ -1,10 +1,10 @@
 import React from 'react';
-import Controller from './Controller';
 import './App.css';
+import Draw from './Draw';
 
 function App() {
   return (
-    <div className="App"><Controller /></div>
+    <div className="App"><Draw /></div>
   );
 }
 
