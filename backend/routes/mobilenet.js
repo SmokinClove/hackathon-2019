@@ -29,20 +29,27 @@ const mobileNet = {
     },
     infer:(req, res) => {
         let received = req.body;
-        const tosend = received.shapes.filter(item => item.length>0);
+        console.log('rec', received)
+        const tosend = received.shapes.filter(item => item.length > 0);
         (async () => {
-            let result = await autodraw(tosend);
-            let filteredResults = result.map(item => {
-                return {
-                    name: item.name,
-                    confidence: item.confidence
-                };
-            }).filter(item => shapes.has(item.name));
-            filteredResults = filteredResults.length > 1 ? filteredResults.reduce(function (a, b) {
-                const higherConfidence = Math.max(a.confidence, b.confidence)
-                return a.confidence === higherConfidence ? a : b;
-            }, { name: "", confidence: 0}) : filteredResults;
-            res.json({ id: received.id, results: [filteredResults]});
+            if (tosend.length > 0) {
+                let result = await autodraw(tosend);
+                let filteredResults = result.map(item => {
+                    return {
+                        name: item.name,
+                        confidence: item.confidence
+                    };
+                }).filter(item => shapes.has(item.name));
+                console.log(filteredResults);
+                filteredResults = filteredResults.length > 1 ? filteredResults.reduce(function (a, b) {
+                    const higherConfidence = Math.max(a.confidence, b.confidence)
+                    return a.confidence === higherConfidence ? a : b;
+                }, { name: "", confidence: 0 }) : filteredResults;
+                res.json({ id: received.id, results: [filteredResults] });
+            } else {
+                res.json({id: received.id, results: []});
+            }
+            
         })();
     },
     debug: (req, res) => {
