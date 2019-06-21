@@ -64,6 +64,7 @@ mobilenet.load().then(item => {
     classify(__dirname + '/uarrowsettest', 'uArrow');
     classify(__dirname + '/darrowsettest', 'dArrow');
     classify(__dirname + '/larrowsettest', 'lArrow');
+    model.save('./trainedmodel');
     // Get the activation from mobilenet from the webcam.
 });
 
@@ -124,8 +125,9 @@ const mobileNet = {
                 // console.log(filteredResults, filteredResults.findIndex(item => specialShapes.has(item.name)));
                 if (filteredResults.findIndex(item => specialShapes.has(item.name)) !== -1) {
                     //handle arrow here
-                    const { label } = await identifyArrow;
-                    // const prediction = label;
+                    const prediction = await identifyArrow;
+                    const { label } = prediction;
+                    console.log(label, prediction)
                     autodrawFinal = { id: received.id, results: [label] };
                 } else {
                     if (filteredResults.length > 1) {
