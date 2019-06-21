@@ -34,13 +34,13 @@ function redraw() {
             }
         }
     }
-    
+
 }
 
 function clear() {
     drawingData = new Array();
     numLines = 0;
-    context.clearRect(0, 0, context.canvas.width, context.canvas.height); 
+    context.clearRect(0, 0, context.canvas.width, context.canvas.height);
 }
 
 function sendToBE() {
@@ -55,7 +55,7 @@ function sendToBE() {
 
 async function app() {
     const canvas = document.getElementById('canvasInAPerfectWorld');
-   
+
     context = canvas.getContext("2d");
 
     canvas.addEventListener("mousedown", function (e) {
@@ -83,7 +83,7 @@ async function app() {
         paint = false;
         numLines += 1;
     });
-   
+
     // When clicking a button, add an example for that class.
     document.getElementById('clear').addEventListener('click', () => clear());
     document.getElementById('sendtobackend').addEventListener('click', () => sendToBE());

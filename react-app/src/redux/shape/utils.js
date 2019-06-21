@@ -1,5 +1,6 @@
 export {
-  getBoundingBox
+  getBoundingRect,
+  getIn,
 }
 
 /**
@@ -9,7 +10,7 @@ export {
  /**
  * @param {Array<Array<Point>>} arrayOfArrayOfPoint
  */
-function getBoundingBox(arrayOfArrayOfPoint) {
+function getBoundingRect(arrayOfArrayOfPoint) {
   const boundingBox = {
     top: Number.POSITIVE_INFINITY,
     left: Number.POSITIVE_INFINITY,
@@ -33,4 +34,15 @@ function getBoundingBox(arrayOfArrayOfPoint) {
   }));
 
   return boundingBox;
+}
+
+function getIn(obj, keyPath, defaultValue) {
+  if (Array.isArray(keyPath) && keyPath.length) {
+    const key = keyPath[0];
+    if (!obj || !obj.hasOwnProperty(key)) {
+      return defaultValue;
+    }
+    return getIn(obj[key], keyPath.slice(1), defaultValue);
+  }
+  return obj;
 }

@@ -1,4 +1,4 @@
-import { getBoundingBox } from './utils';
+import { getBoundingRect } from './utils';
 import { fetchShapeTypeAPI } from './api';
 import { FETCH_SHAPE_TYPE } from './actionType';
 
@@ -21,12 +21,12 @@ function fetchShapeType(timeStamp, arrayOfArrayOfPoint) {
     if (shouldQuit) {
       return;
     }
-    const boundingBox = getBoundingBox(arrayOfArrayOfPoint);
+    const boundingRect = getBoundingRect(arrayOfArrayOfPoint);
     dispatch({
       type: FETCH_SHAPE_TYPE.REQUESTED,
       payload: {
         key: timeStamp,
-        boundingBox,
+        boundingRect,
       }
     });
 
@@ -36,7 +36,7 @@ function fetchShapeType(timeStamp, arrayOfArrayOfPoint) {
         type: FETCH_SHAPE_TYPE.SUCCESS,
         payload: {
           key: timeStamp,
-          result, // TODO: @James No idea what result look like
+          result,
         }
       });
     } catch {
