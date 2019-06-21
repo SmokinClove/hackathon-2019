@@ -23,6 +23,14 @@ const mobileNet = {
             let result = await autodraw(shapes);
             res.send(result);
         })();
+    },
+    infer:(req, res) => {
+        let received = req.body;
+        const tosend = received.shapes.filter(item => item.length>0);
+        (async () => {
+            let result = await autodraw(tosend);
+            res.json(result);
+        })();
     }
 }
 

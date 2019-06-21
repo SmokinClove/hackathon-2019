@@ -1,9 +1,12 @@
 
 //packages
 import express from 'express';
-var app = express();
+import cors from 'cors';
 import bodyParser from 'body-parser';
 import project_routes from './routes';
+
+var app = express();
+app.use(cors());
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
