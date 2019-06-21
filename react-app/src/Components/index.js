@@ -112,6 +112,16 @@ export default class Component {
         width: window.innerWidth
 			});
     }
+    // display/hide controls on double click
+    fabric.util.addListener(canvas.upperCanvasEl, 'dblclick', function(e) {
+      canvas.add(new fabric.IText('Text', {
+        fontFamily: 'arial black',
+        fontWeight: 'normal',
+        left: e.pageX - this.offsetLeft,
+        top: e.pageY - this.offsetTop,
+        lineHeight: 1.1,
+      }));
+    });
   }
 
 	/**
