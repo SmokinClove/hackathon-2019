@@ -60,7 +60,7 @@ export default class Component {
 	addTriangle(x1, y1, x2, y2) {
 		const triangle = new fabric.Triangle({
 			width: x2 - x1,
-			height: y1 - y2,
+			height: y2 - y1,
 			left: x1,
 			top: y1,
 			...inlineProperties
