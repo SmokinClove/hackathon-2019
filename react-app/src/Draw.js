@@ -17,13 +17,13 @@ class Draw extends React.Component {
   constructor(props) {
     super(props);
     this.canvas = React.createRef();
+    this.downloadBtn= React.createRef();
     this.obj = []; // an Array of Array of Points, which is the object to draw
     this.currentLine = []; // Stores an array of Points, which is the current line being drawn
   }
 
   formObject = debounded(() => {
     // TODO: send to api and refresh the this.obj
-    console.log('obj ', this.obj);
     const timestamp = new Date().getTime();
     if (!this.paint || this.obj.length !== 0) {
       this.props.fetchShapeType(timestamp, this.obj)
@@ -95,10 +95,24 @@ class Draw extends React.Component {
         self.formObject()
       }
     });
+
+    
+    var link = document.createElement('a');
+    link.classList.add("exportImg");
+    link.innerHTML = 'download image';
+    link.addEventListener('click', function(ev) {
+      const canvas=self.canvas.current;
+      link.href = canvas.toDataURL();
+      link.download = "mypainting.png";
+    }, false);
+    document.getElementById("playground").appendChild(link);
   }
 
+
   render() {
-    return  <div><canvas id="canvasInAPerfectWorld" width="600" height="600" style={{border: "black 1px solid"}} ref={this.canvas}></canvas></div>
+    return <div id="playground" className="playground">
+      <canvas id="canvasInAPerfectWorld" width="600" height="600" style={{border: "black 1px solid"}} ref={this.canvas}></canvas>
+    </div>
   }
 }
 
