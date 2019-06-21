@@ -1,4 +1,5 @@
 import { FETCH_SHAPE_TYPE } from './actionType';
+import { getIn } from './utils';
 
 /**
  * @typedef {'FETCHING'| 'FAILED' | 'SUGGESTING' | 'FINAL'} FetchingState
@@ -26,7 +27,7 @@ import { FETCH_SHAPE_TYPE } from './actionType';
  /**
   * @type {FetchingState}
   */
-const FETCHING_STATES = {
+export const FETCHING_STATES = {
   FETCHING: 'FETCHING',
   FAILED: 'FAILED',
   SUGGESTING: 'SUGGESTING',
@@ -49,12 +50,13 @@ export default (state = initialState, action) => {
       }
     }
   case FETCH_SHAPE_TYPE.SUCCESS:
+    const results = getIn(action, ['payload', 'result', 'results']) || [];
     return {
       ...state,
       [action.payload.key]: {
         ...state[action.payload.key],
-        name: action.payload.result,
-        suggestions: [action.payload.result], // TODO: @James what is the final result,
+        name: results.length ? results[0].name : '',
+        suggestions: results,
         state: FETCHING_STATES.FINAL, // NOTE: @James If we consider suggesting, then change this state to SUGGESTING, write more action and selectors.
       }
     }

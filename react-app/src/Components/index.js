@@ -7,18 +7,25 @@ const inlineProperties = {
 	strokeWidth: 5
 }
 
+export const functionMapping = {
+	square: 'addRect',
+	circle: 'addCircle',
+	diamond: 'addDiamond',
+	triangle: 'addTriangle',
+}
+
 export default class Component {
   constructor() {
     if (!canvas) {
 		canvas = new fabric.Canvas("thisStringIsTheCanvasId", {
 			height: window.innerHeight/2,
 			width: window.innerWidth/2,
-		});	
+		});
     }
   }
 
 	/**
-	 * 
+	 *
 	 * @param {number} x1 Top-left x1
 	 * @param {number} y1 Top-left y1
 	 * @param {number} x2 Bottom-right x2
@@ -39,9 +46,9 @@ export default class Component {
 	}
 
 	addCircle(x1, y1, x2, y2) {
-		const radius = Math.min(x2 - x1, y1 - y2) / 2;
+		const radius = Math.min(x2 - x1, y2 - y1) / 2;
 		const circle = new fabric.Circle({
-			left: x1, 
+			left: x1,
 			top: y1,
 			radius,
 			...inlineProperties
@@ -52,8 +59,8 @@ export default class Component {
 
 	addTriangle(x1, y1, x2, y2) {
 		const triangle = new fabric.Triangle({
-			width: x2 - x1, 
-			height: y1 - y2, 
+			width: x2 - x1,
+			height: y1 - y2,
 			left: x1,
 			top: y1,
 			...inlineProperties
@@ -80,7 +87,7 @@ export default class Component {
 		canvas.add(poly);
 		return this;
 	}
-	
+
 	remove() {
 		canvas.getActiveObjects().forEach((obj) => {
 			canvas.remove(obj)

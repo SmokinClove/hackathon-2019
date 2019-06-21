@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { fetchShapeType } from './redux/shape/action';
 
-const debounded = (fn, timeout) => {
+const debounced = (fn, timeout) => {
   let timeoutHandler = null;
   return function() {
     clearTimeout(timeoutHandler);
@@ -22,15 +22,13 @@ class Draw extends React.Component {
     this.currentLine = []; // Stores an array of Points, which is the current line being drawn
   }
 
-  formObject = debounded(() => {
-    // TODO: send to api and refresh the this.obj
+  formObject = debounced(() => {
     const timestamp = new Date().getTime();
-    if (!this.paint || this.obj.length !== 0) {
+    if (!this.paint && this.obj.length !== 0) {
       this.props.fetchShapeType(timestamp, this.obj)
     }
-    // getImage(timestamp, this.obj)
     this.obj = [];
-  }, 1000);
+  }, 2000);
 
   componentDidMount() {
     var clickX = [];
@@ -96,7 +94,7 @@ class Draw extends React.Component {
       }
     });
 
-    
+
     var link = document.createElement('a');
     link.classList.add("exportImg");
     link.innerHTML = 'download image';
