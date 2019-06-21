@@ -1,6 +1,7 @@
 
 
 import autodraw from 'autodraw';
+import expectedShapes from '../expectedShapes';
 
 const shape1 = [
     {
@@ -13,14 +14,16 @@ const shape1 = [
     }
 ]
 
-const shapes = [
+const testShapes = [
     shape1
 ]
+
+const shapes = new Set(expectedShapes);
 
 const mobileNet = {
     log:(req, res) => {
         (async () => {
-            let result = await autodraw(shapes);
+            let result = await autodraw(testShapes);
             res.send(result);
         })();
     },
@@ -29,7 +32,34 @@ const mobileNet = {
         const tosend = received.shapes.filter(item => item.length>0);
         (async () => {
             let result = await autodraw(tosend);
-            res.json(result);
+            let filteredResults = result.map(item => {
+                return {
+                    name: item.name,
+                    confidence: item.confidence
+                };
+            }).filter(item => shapes.has(item.name));
+            // console.log(result);
+            // console.log(filteredResults);
+            filteredResults = filteredResults.reduce(function (a, b) {
+                const higherConfidence = Math.max(a.confidence, b.confidence)
+                return a.confidence === higherConfidence ? a : b;
+            });
+            res.json({result: filteredResults});
+        })();
+    },
+    debug: (req, res) => {
+        let received = req.body;
+        const tosend = received.shapes.filter(item => item.length > 0);
+        (async () => {
+            let result = await autodraw(tosend);
+            let filteredResults = result.map(item => {
+                return {
+                    name: item.name,
+                    confidence: item.confidence
+                };
+            });
+            
+            res.json({ result: filteredResults });
         })();
     }
 }
