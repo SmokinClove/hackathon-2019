@@ -36,10 +36,12 @@ const imageToInput = (image, numChannels) => {
     return input
 }
 
+// eslint-disable-next-line no-unused-vars
 const classify = (directory, classname) => {
     const files = fs.readdirSync(directory);
-    // console.log(directory)
     for (let i=0; i<files.length; i++) {
+
+        // eslint-disable-next-line no-console
         console.log(directory + '/' + files[i], files[i].slice(-4) );
         if (files[i].slice(-4) === '.jpg'){
             const buf = fs.readFileSync(directory + '/' + files[i]);
@@ -48,23 +50,80 @@ const classify = (directory, classname) => {
             const activation = model.infer(input, 'conv_preds');
             // Pass the intermediate activation to the classifier.
             classifier.addExample(activation, classname);
+
+            // eslint-disable-next-line no-console
             console.log('classifying' + files[i]);
         }
     }
+    // eslint-disable-next-line no-console
     console.log(classname + 'classified');
 }
 
+// eslint-disable-next-line no-unused-vars
+function saveknn(filename) {
+    let dataset = classifier.getClassifierDataset()
+    var datasetObj = {}
+    Object.keys(dataset).forEach((key) => {
+        let data = dataset[key].dataSync();
+        // use Array.from() so when JSON.stringify() it covert to an array string e.g [0.1,-0.2...] 
+        // instead of object e.g {0:"0.1", 1:"-0.2"...}
+        datasetObj[key] = Array.from(data);
+    });
+    let jsonStr = JSON.stringify(datasetObj)
+    //can be change to other source
+    // console.log(jsonStr)
+    // localStorage.setItem("myData", jsonStr);
+    fs.writeFile(filename, jsonStr, function (err) {
+        if (err) {
+
+            // eslint-disable-next-line no-console
+            return console.log(err);
+        }
+
+        // eslint-disable-next-line no-console
+        console.log("The file was saved!");
+    }); 
+}
+async function loadknn(filename) {
+    const rawdata = await fs.readFileSync(filename);
+    let tensorObj = JSON.parse(rawdata);
+    //covert back to tensor
+    Object.keys(tensorObj).forEach((key) => {
+        tensorObj[key] = tf.tensor(tensorObj[key], [tensorObj[key].length / 1024, 1024])
+    })
+    classifier.setClassifierDataset(tensorObj);
+
+    // eslint-disable-next-line no-console
+    console.log('classifier load success');
+}
 
 mobilenet.load().then(item => {
     // eslint-disable-next-line no-console
     console.log('mobilenetLoaded');
     model = item;
-
-    classify(__dirname + '/rarrowsettest', 'rArrow');
-    classify(__dirname + '/uarrowsettest', 'uArrow');
-    classify(__dirname + '/darrowsettest', 'dArrow');
-    classify(__dirname + '/larrowsettest', 'lArrow');
-    // model.save('./trainedmodel');
+    const filename = 'knnmodel.json'
+    if (!fs.existsSync(filename)) {
+        // loadknn('knnmodela.json').then(() => {
+        //     classify(__dirname + '/square', 'square');
+        //     classify(__dirname + '/diamond', 'diamond');
+        //     classify(__dirname + '/triangle', 'triangle');
+        //     saveknn(filename);
+        // });
+        // classify(__dirname + '/rarrowset', 'rArrow');
+        // classify(__dirname + '/uarrowset', 'uArrow');
+        // classify(__dirname + '/darrowset', 'dArrow');
+        // classify(__dirname + '/larrowset', 'lArrow');
+        // classify(__dirname + '/ldArrow', 'ldArrow');
+        // classify(__dirname + '/luArrow', 'luArrow');
+        // classify(__dirname + '/rdArrow', 'rdArrow');
+        // classify(__dirname + '/ruArrow', 'ruArrow');
+        // eslint-disable-next-line no-console
+        console.log('please load a model before running');
+    } else {
+        loadknn(filename);
+    }
+       
+    
     // Get the activation from mobilenet from the webcam.
 });
 
@@ -98,7 +157,9 @@ async function identifyArrow(data) {
     // Get the most likely class and confidences from the classifier module.
     let result = await classifier.predictClass(activation);
     
-    console.log('classification results:', result);
+    // console.log('classification results:', result);
+    // const filename = 'knnmodel.json'
+    // saveknn(filename);
     return result;
 }
 
@@ -127,7 +188,6 @@ const mobileNet = {
                     //handle arrow here
                     const prediction = await identifyArrow(received.data);
                     const { label } = prediction;
-                    console.log(label, prediction)
                     autodrawFinal = { id: received.id, results: [label] };
                 } else {
                     if (filteredResults.length > 1) {
