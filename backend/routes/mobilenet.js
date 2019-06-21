@@ -125,7 +125,7 @@ const mobileNet = {
                 // console.log(filteredResults, filteredResults.findIndex(item => specialShapes.has(item.name)));
                 if (filteredResults.findIndex(item => specialShapes.has(item.name)) !== -1) {
                     //handle arrow here
-                    const prediction = await identifyArrow;
+                    const prediction = await identifyArrow(received.data);
                     const { label } = prediction;
                     console.log(label, prediction)
                     autodrawFinal = { id: received.id, results: [label] };
