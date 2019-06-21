@@ -111,7 +111,7 @@ class Draw extends React.Component {
 
   render() {
     return <div id="playground" className="playground">
-      <canvas id="canvasInAPerfectWorld" width="600" height="600" style={{border: "black 1px solid"}} ref={this.canvas}></canvas>
+      <canvas id="canvasInAPerfectWorld" width={window.innerWidth/2} height={window.innerHeight/2} style={{border: "black 1px solid" }} ref={this.canvas}></canvas>
     </div>
   }
 }
