@@ -62,7 +62,7 @@ const mobileNet = {
                     };
                 }).filter(item => shapes.has(item.name));
                 
-                res.json({ id: received.id, results: [filteredResults] });
+                res.json({ id: received.id, results: filteredResults });
             } else {
                 res.json({ id: received.id, results: [] });
             }
