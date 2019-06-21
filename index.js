@@ -13,7 +13,6 @@ function addClick(x, y, dragging) {
     } else {
         drawingData.push([]);
     }
-    // clickDrag.push(dragging);
 }
 
 function redraw() {
