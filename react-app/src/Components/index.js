@@ -10,10 +10,10 @@ const inlineProperties = {
 export default class Component {
   constructor() {
     if (!canvas) {
-		canvas = new fabric.Canvas("thisStringIsTheCanvasId", {
-			height: window.innerHeight/2,
-			width: window.innerWidth/2,
-		});	
+      canvas = new fabric.Canvas("thisStringIsTheCanvasId", {
+        height: window.innerHeight/2,
+        width: window.innerWidth/2,
+      });
     }
   }
 
@@ -36,7 +36,16 @@ export default class Component {
 		});
 		canvas.add(rect);
 		return this;
-	}
+  }
+
+  addInput(x1, y1) {
+    canvas.add(new fabric.IText('Tap and Type', { 
+      fontFamily: 'arial black',
+      fontWeight: 'normal',
+      left: x1, 
+      top: y1,
+    }));
+  }
 
 	addCircle(x1, y1, x2, y2) {
 		const radius = Math.min(x2 - x1, y1 - y2) / 2;
