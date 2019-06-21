@@ -22,7 +22,7 @@ function createDiagonalTopRightArrow(x1, y1, x2, y2) {
 	);
 	const group = new fabric.Group([ path, caret ]);
 	return group;
-} 
+}
 
 function createRightArrow(x1, y1, x2, y2) {
 	const midY = y1 + (y2 - y1) / 2;
@@ -58,7 +58,7 @@ function createUpArrow(x1, y1, x2, y2) {
 			top: y1,
 			...inlineProperties
 		}
-	); 
+	);
 	const path1 = new fabric.Path(`M ${midX} ${y1} L ${midX} ${y2} z`)
 	.set(inlineProperties);
 	const group = new fabric.Group([ path1, caret ]);
@@ -70,6 +70,16 @@ export const functionMapping = {
 	circle: 'addCircle',
 	diamond: 'addDiamond',
 	triangle: 'addTriangle',
+	hLine: 'addHLine',
+	vLine: 'addVLine',
+	rArrow: 'addRightArrow',
+	lArrow: 'addLeftArrow',
+	uArrow: 'addUpArrow',
+	dArrow: 'addDownArrow',
+	ruArrow: 'addDiagonalTopRightArrow',
+	ldArrow: 'addDiagonalBottomLeftArrow',
+	rdArrow: 'addDiagonalBottomRightArrow',
+	luArrow: 'addDiagonalTopLeftArrow',
 }
 
 export default class Component {
@@ -176,13 +186,13 @@ export default class Component {
 		canvas.add(path);
 		return this;
 	}
-	
+
   addUpArrow(x1, y1, x2, y2) {
 		const group = createUpArrow(x1, y1, x2, y2);
 		canvas.add(group);
 		return this;
 	}
-	
+
 	addDownArrow(x1, y1, x2, y2) {
 		const group = createUpArrow(x1, y1, x2, y2).set("flipY", true);
 		canvas.add(group);
@@ -190,10 +200,10 @@ export default class Component {
   }
 
   addInput(x1, y1) {
-    canvas.add(new fabric.IText('Tap and Type', { 
+    canvas.add(new fabric.IText('Tap and Type', {
       fontFamily: 'arial black',
       fontWeight: 'normal',
-      left: x1, 
+      left: x1,
       top: y1,
     }));
   }
