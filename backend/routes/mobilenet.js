@@ -64,7 +64,7 @@ mobilenet.load().then(item => {
     classify(__dirname + '/uarrowsettest', 'uArrow');
     classify(__dirname + '/darrowsettest', 'dArrow');
     classify(__dirname + '/larrowsettest', 'lArrow');
-    model.save('./trainedmodel');
+    // model.save('./trainedmodel');
     // Get the activation from mobilenet from the webcam.
 });
 
