@@ -36,6 +36,7 @@ const imageToInput = (image, numChannels) => {
     return input
 }
 
+// eslint-disable-next-line no-unused-vars
 const classify = (directory, classname) => {
     const files = fs.readdirSync(directory);
     for (let i=0; i<files.length; i++) {
@@ -54,11 +55,11 @@ const classify = (directory, classname) => {
             console.log('classifying' + files[i]);
         }
     }
-
     // eslint-disable-next-line no-console
     console.log(classname + 'classified');
 }
 
+// eslint-disable-next-line no-unused-vars
 function saveknn(filename) {
     let dataset = classifier.getClassifierDataset()
     var datasetObj = {}
@@ -116,6 +117,7 @@ mobilenet.load().then(item => {
         // classify(__dirname + '/luArrow', 'luArrow');
         // classify(__dirname + '/rdArrow', 'rdArrow');
         // classify(__dirname + '/ruArrow', 'ruArrow');
+        // eslint-disable-next-line no-console
         console.log('please load a model before running');
     } else {
         loadknn(filename);
@@ -155,8 +157,8 @@ async function identifyArrow(data) {
     // Get the most likely class and confidences from the classifier module.
     let result = await classifier.predictClass(activation);
     
-    console.log('classification results:', result);
-    const filename = 'knnmodel.json'
+    // console.log('classification results:', result);
+    // const filename = 'knnmodel.json'
     // saveknn(filename);
     return result;
 }
