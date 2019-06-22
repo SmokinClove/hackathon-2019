@@ -296,4 +296,7 @@ export default class Component {
     });
     canvas.discardActiveObject().renderAll();
   }
+  deSelectAll() {
+    canvas.discardActiveObject().renderAll();
+  }
 }

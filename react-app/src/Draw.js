@@ -48,7 +48,11 @@ class Draw extends React.Component {
   }, 1000);
 
   keyboardListener = e => {
-    if (e.which === 17 /* control key, to toggle draw mode */) this.setState({ isDrawingMode: !this.state.isDrawingMode });
+    if (e.which === 17 /* control key, to toggle draw mode */) {
+      // deselect the objects in the second canvas first
+      this.canvas2 && this.canvas2.deSelectAll();
+      this.setState({ isDrawingMode: !this.state.isDrawingMode });
+    }
     if (['Backspace', 'Delete'].includes(e.key)) this.canvas2.remove();
   }
 
@@ -99,7 +103,6 @@ class Draw extends React.Component {
     };
 
     const canvas = this.canvas.current;
-    const canvasContainer = this.canvasContainer.current;
     context = canvas.getContext('2d');
 
     const hiddenCanvas = this.hiddenCanvas.current;
@@ -145,6 +148,8 @@ class Draw extends React.Component {
     link.style.zIndex = '100';
     link.innerHTML = '<svg id="Layer_1" viewBox="0 0 64 64"><path fill="#2ECC71" d="M32 0c17.7 0 32 14.3 32 32S49.7 64 32 64 0 49.7 0 32 14.3 0 32 0z" id="XMLID_16_"/><path fill="#FFF" d="M16 43h32v6H16zM43 27L32 40 21 27h7V12h8v15z"/></svg>';
     link.addEventListener('click', function(ev) {
+      // deselect the objects in the second canvas first
+      self.canvas2 && self.canvas2.deSelectAll();
       const canvas=document.getElementById("thisStringIsTheCanvasId");
       link.href = canvas.toDataURL();
       link.download = "mydiagram.png";
@@ -195,7 +200,6 @@ class Draw extends React.Component {
             height={window.innerHeight}
             style={{
               display: this.state.isDrawingMode ? 'block' : 'none',
-              border: 'black 1px solid',
               position: 'absolute',
               top: '0',
               zIndex: this.state.isDrawingMode ? 1 : 'unset'
@@ -206,9 +210,6 @@ class Draw extends React.Component {
             id="thisStringIsTheCanvasId"
             width={window.innerWidth}
             height={window.innerHeight}
-            style={{
-              border: '1px solid black',
-            }}
           />
           <canvas
             id="backdropInvisibleCanvas"
