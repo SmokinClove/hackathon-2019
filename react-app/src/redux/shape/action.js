@@ -62,11 +62,13 @@ function fetchShapeType(timeStamp, arrayOfArrayOfPoint, canvas) {
       return;
     }
     const boundingRect = getBoundingRect(arrayOfArrayOfPoint);
+    const cloneOfObj = arrayOfArrayOfPoint.slice(); // To make sure nothing else change;
     dispatch({
       type: FETCH_SHAPE_TYPE.REQUESTED,
       payload: {
         key: timeStamp,
         boundingRect,
+        rawInput: cloneOfObj,
       }
     });
 

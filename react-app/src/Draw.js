@@ -45,7 +45,7 @@ class Draw extends React.Component {
       this.props.fetchShapeType(timestamp, this.obj, this.hiddenCanvas.current);
     }
     this.obj = [];
-  }, 2000);
+  }, 1000);
 
   keyboardListener = e => {
     if (e.which === 17 /* control key, to toggle draw mode */) this.setState({ isDrawingMode: !this.state.isDrawingMode });
@@ -174,6 +174,8 @@ class Draw extends React.Component {
           this.clickDrag = [];
         }
         this.drawn.add(shapeId);
+      } else if (componentName === '') {
+        this.canvas2 && this.canvas2.addRawLines(component.rawInput);
       }
     }
   }

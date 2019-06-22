@@ -114,6 +114,10 @@ export default class Component {
     }
     // display/hide controls on double click
     fabric.util.addListener(canvas.upperCanvasEl, 'dblclick', function(e) {
+			const activeObjects = canvas.getActiveObjects();
+			if (activeObjects.length) {
+				return;
+			}
       canvas.add(new fabric.IText('Text', {
         fontFamily: 'arial black',
         fontWeight: 'normal',
@@ -238,7 +242,15 @@ export default class Component {
       left: x1,
       top: y1,
     }));
-  }
+	}
+
+	addRawLines(arrayOfArrayOfPoints) {
+		const arrayOfPaths = arrayOfArrayOfPoints.map(arrayOfPoints => new fabric.Path(`M ${arrayOfPoints.map(point => `${point.x} ${point.y}`).join(' L ')}`)
+			.set(inlineProperties));
+		const group = new fabric.Group(arrayOfPaths);
+		canvas.add(group);
+		return this;
+	}
 
 	addRightArrow(x1, y1, x2, y2) {
 		const group = createRightArrow(x1, y1, x2, y2);
@@ -276,7 +288,7 @@ export default class Component {
   remove() {
 		const activeObjects = canvas.getActiveObjects();
 		// HACKY don't delete text
-		if (activeObjects.length === 1 && activeObjects[0].fontFamily && activeObjects[0].selectionEnd) {
+		if (activeObjects.length === 1 && activeObjects[0].fontFamily && !activeObjects[0].hasControls) {
 			return; // Selecting a text element;
 		}
 		activeObjects.forEach(obj => {
