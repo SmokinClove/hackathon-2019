@@ -242,7 +242,15 @@ export default class Component {
       left: x1,
       top: y1,
     }));
-  }
+	}
+
+	addRawLines(arrayOfArrayOfPoints) {
+		const arrayOfPaths = arrayOfArrayOfPoints.map(arrayOfPoints => new fabric.Path(`M ${arrayOfPoints.map(point => `${point.x} ${point.y}`).join(' L ')}`)
+			.set(inlineProperties));
+		const group = new fabric.Group(arrayOfPaths);
+		canvas.add(group);
+		return this;
+	}
 
 	addRightArrow(x1, y1, x2, y2) {
 		const group = createRightArrow(x1, y1, x2, y2);
