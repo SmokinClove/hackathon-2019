@@ -5,11 +5,15 @@ import Components, { functionMapping } from './Components';
 import { getFinalizedShapes } from './redux/shape/selector';
 import './App.css';
 
-const debounced = (fn, timeout) => {
+function debounced (fn, timeout) {
   let timeoutHandler = null;
   return function() {
+    const context = this;
+    const args = arguments;
     clearTimeout(timeoutHandler);
-    timeoutHandler = setTimeout(fn, timeout);
+    timeoutHandler = setTimeout(function() {
+      fn.apply(context, args);
+    }, timeout);
   };
 };
 /*
@@ -41,17 +45,20 @@ class Draw extends React.Component {
       this.props.fetchShapeType(timestamp, this.obj, this.hiddenCanvas.current);
     }
     this.obj = [];
-  }, 2000);
+  }, 1000);
+
+  keyboardListener = e => {
+    if (e.key === 'w' /* to draw */) this.setState({ isDrawingMode: true });
+    if (e.key === 'q' /* to view */) this.setState({ isDrawingMode: false });
+    if (['Backspace', 'Delete'].includes(e.key)) this.canvas2.remove();
+  }
 
   componentDidMount() {
     var context;
     var hiddenContext;
     var self = this;
     this.canvas2 = new Components();
-    document.addEventListener('keypress', e => {
-      if (e.key === 'w' /* to draw */) self.setState({ isDrawingMode: true });
-      if (e.key === 'q' /* to view */) self.setState({ isDrawingMode: false });
-    });
+    document.addEventListener('keydown', this.keyboardListener);
 
     const addClick = (x, y, dragging) => {
       this.clickX.push(x);
@@ -98,14 +105,14 @@ class Draw extends React.Component {
 
     const hiddenCanvas = this.hiddenCanvas.current;
     hiddenContext = hiddenCanvas.getContext('2d');
-    canvasContainer.addEventListener('mousedown', function(e) {
+    canvas.addEventListener('mousedown', function(e) {
       if (!self.state.isDrawingMode) return;
       self.paint = true;
       addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
       redraw();
     });
 
-    canvasContainer.addEventListener('mousemove', function(e) {
+    canvas.addEventListener('mousemove', function(e) {
       if (!self.state.isDrawingMode) return;
       if (self.paint) {
         addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop, true);
@@ -113,7 +120,7 @@ class Draw extends React.Component {
       }
     });
 
-    canvasContainer.addEventListener('mouseup', function(e) {
+    canvas.addEventListener('mouseup', function(e) {
       if (!self.state.isDrawingMode) return;
       self.paint = false;
       if (!!self.currentLine && self.currentLine.length > 0)
@@ -122,20 +129,13 @@ class Draw extends React.Component {
       self.formObject();
     });
 
-    canvasContainer.addEventListener('mouseleave', function(e) {
+    canvas.addEventListener('mouseleave', function(e) {
       if (!self.state.isDrawingMode) return;
       if (self.paint) {
         self.paint = false;
         self.formObject();
       }
     });
-
-    document
-      .getElementById('thisStringIsTheCanvasId')
-      .addEventListener('dblclick', function(e) {
-        console.log('dblclick ', e);
-        self.canvas2.addInput(20, 20);
-      });
   }
 
   onDownloadClick = (event) => {
@@ -199,7 +199,7 @@ class Draw extends React.Component {
             width={window.innerWidth}
             height={window.innerHeight}
             style={{
-              border: '1px solid green'
+              border: '1px solid black',
             }}
           />
           <canvas
@@ -209,7 +209,7 @@ class Draw extends React.Component {
             ref={this.hiddenCanvas}
           />
         </div>
-        <a className="exportImg" onClick={this.onDownloadClick} href="/">
+        <a className="exportImg" onClick={this.onDownloadClick} href="/" style={{height:'80px'}}>
           Download Image
         </a>
       </div>

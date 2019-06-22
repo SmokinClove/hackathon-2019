@@ -7,14 +7,36 @@ const inlineProperties = {
   strokeWidth: 5
 };
 
+function rotatePoint(subject, pivot, delta) {
+  const convertedSubject = {
+		x: subject.x - pivot.x,
+    y: subject.y - pivot.y
+	}
+  const cosTheta = Math.cos(delta);
+  const sinTheta = Math.sin(delta);
+  const newConvertedSubject = {
+		x: convertedSubject.x * cosTheta - convertedSubject.y * sinTheta,
+		y: convertedSubject.x * sinTheta + convertedSubject.y * cosTheta,
+	}
+
+  return {
+    x: newConvertedSubject.x + pivot.x,
+		y: newConvertedSubject.y + pivot.y,
+	}
+}
+
+
 function createDiagonalTopRightArrow(x1, y1, x2, y2) {
 	const path = new fabric.Path(`M ${x2} ${y1} L ${x1} ${y2} z`)
 		.set(inlineProperties);
+
+	const displacement = Math.atan((x2 - x1) / (y2 - y1)) - Math.PI / 4;
+	const centralPoint = { x: x2 + 2,  y: y1 + 2 }; // NOTE: Don't know why there is a displace....
 	const caret = new fabric.Polyline(
 		[
-			{ x: x2 - 25, y: y1 },
-			{ x: x2, y: y1 },
-			{ x: x2, y: y1 + 25 },
+			rotatePoint({ x: x2 - 23, y: y1 + 2 }, centralPoint, displacement),
+			centralPoint,
+			rotatePoint({ x: x2 + 2, y: y1 + 27 }, centralPoint, displacement),
 		],
 		{
 			...inlineProperties
@@ -90,6 +112,20 @@ export default class Component {
         width: window.innerWidth
 			});
     }
+    // display/hide controls on double click
+    fabric.util.addListener(canvas.upperCanvasEl, 'dblclick', function(e) {
+			const activeObjects = canvas.getActiveObjects();
+			if (activeObjects.length) {
+				return;
+			}
+      canvas.add(new fabric.IText('Text', {
+        fontFamily: 'arial black',
+        fontWeight: 'normal',
+        left: e.pageX - this.offsetLeft,
+        top: e.pageY - this.offsetTop,
+        lineHeight: 1.1,
+      }));
+    });
   }
 
 	/**
@@ -242,7 +278,12 @@ export default class Component {
 	}
 
   remove() {
-    canvas.getActiveObjects().forEach(obj => {
+		const activeObjects = canvas.getActiveObjects();
+		// HACKY don't delete text
+		if (activeObjects.length === 1 && activeObjects[0].fontFamily && activeObjects[0].selectionEnd) {
+			return; // Selecting a text element;
+		}
+		activeObjects.forEach(obj => {
       canvas.remove(obj);
     });
     canvas.discardActiveObject().renderAll();
