@@ -167,8 +167,13 @@ class Draw extends React.Component {
       const componentName = component.name;
       const { top, left, bottom, right } = component.boundingRect;
       const actualFunction = functionMapping[componentName];
-      if (actualFunction) {
-        this.canvas2 && this.canvas2[actualFunction](left, top, right, bottom);
+      if (actualFunction || componentName === '') {
+        if (actualFunction) {
+          this.canvas2 && this.canvas2[actualFunction](left, top, right, bottom);
+        } else {
+          this.canvas2 && this.canvas2.addRawLines(component.rawInput);
+        }
+
         // then we need to clear the current canvas
         const canvas = document.getElementById('canvasInAPerfectWorld');
         const context = canvas ? canvas.getContext('2d') : null;
@@ -178,9 +183,6 @@ class Draw extends React.Component {
           this.clickY = [];
           this.clickDrag = [];
         }
-        this.drawn.add(shapeId);
-      } else if (componentName === '') {
-        this.canvas2 && this.canvas2.addRawLines(component.rawInput);
         this.drawn.add(shapeId);
       }
     }
