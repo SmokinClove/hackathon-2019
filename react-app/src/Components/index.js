@@ -280,7 +280,7 @@ export default class Component {
   remove() {
 		const activeObjects = canvas.getActiveObjects();
 		// HACKY don't delete text
-		if (activeObjects.length === 1 && activeObjects[0].fontFamily && activeObjects[0].selectionEnd) {
+		if (activeObjects.length === 1 && activeObjects[0].fontFamily && !activeObjects[0].hasControls) {
 			return; // Selecting a text element;
 		}
 		activeObjects.forEach(obj => {
