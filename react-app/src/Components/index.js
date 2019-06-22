@@ -114,19 +114,13 @@ export default class Component {
     }
     // display/hide controls on double click
     fabric.util.addListener(canvas.upperCanvasEl, 'dblclick', function(e) {
-      console.log(e);
       canvas.add(new fabric.IText('Text', {
         fontFamily: 'arial black',
         fontWeight: 'normal',
         left: e.pageX - this.offsetLeft,
         top: e.pageY - this.offsetTop,
+        lineHeight: 1.1,
       }));
-      //this.addInput(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-      if (canvas.findTarget(e)) {
-        let objType = canvas.findTarget(e).type;
-        console.log(objType);
-        //canvas.addInput(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
-      }
     });
   }
 
