@@ -176,6 +176,7 @@ class Draw extends React.Component {
         this.drawn.add(shapeId);
       } else if (componentName === '') {
         this.canvas2 && this.canvas2.addRawLines(component.rawInput);
+        this.drawn.add(shapeId);
       }
     }
   }
