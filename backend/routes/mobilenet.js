@@ -176,6 +176,12 @@ const mobileNet = {
         (async () => {
             if (tosend.length > 0) {
                 let result = await autodraw(tosend);
+                console.log('autodraw', result.map(item => {
+                    return {
+                        name: item.name,
+                        confidence: item.confidence
+                    };
+                }));
                 let filteredResults = result.map(item => {
                     return {
                         name: item.name,
