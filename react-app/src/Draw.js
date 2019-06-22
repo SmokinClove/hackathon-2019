@@ -45,7 +45,7 @@ class Draw extends React.Component {
       this.props.fetchShapeType(timestamp, this.obj, this.hiddenCanvas.current);
     }
     this.obj = [];
-  }, 2000);
+  }, 1000);
 
   keyboardListener = e => {
     if (e.key === 'w' /* to draw */) this.setState({ isDrawingMode: true });

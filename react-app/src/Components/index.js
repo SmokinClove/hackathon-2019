@@ -114,6 +114,10 @@ export default class Component {
     }
     // display/hide controls on double click
     fabric.util.addListener(canvas.upperCanvasEl, 'dblclick', function(e) {
+			const activeObjects = canvas.getActiveObjects();
+			if (activeObjects.length) {
+				return;
+			}
       canvas.add(new fabric.IText('Text', {
         fontFamily: 'arial black',
         fontWeight: 'normal',
