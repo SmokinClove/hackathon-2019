@@ -48,8 +48,7 @@ class Draw extends React.Component {
   }, 1000);
 
   keyboardListener = e => {
-    if (e.key === 'w' /* to draw */) this.setState({ isDrawingMode: true });
-    if (e.key === 'q' /* to view */) this.setState({ isDrawingMode: false });
+    if (e.which === 17 /* control key, to toggle draw mode */) this.setState({ isDrawingMode: !this.state.isDrawingMode });
     if (['Backspace', 'Delete'].includes(e.key)) this.canvas2.remove();
   }
 
@@ -136,12 +135,21 @@ class Draw extends React.Component {
         self.formObject();
       }
     });
-  }
-
-  onDownloadClick = (event) => {
-    const canvas = document.getElementById('thisStringIsTheCanvasId');
-    event.target.href = canvas.toDataURL();
-    event.target.download = 'mydiagram.png';
+    var link = document.createElement('a');
+    link.classList.add("exportImg");
+    link.style.position = 'fixed';
+    link.style.bottom = '10px';
+    link.style.right = '100px';
+    link.style.height = '80px';
+    link.style.width = '80px';
+    link.style.zIndex = '100';
+    link.innerHTML = '<svg id="Layer_1" viewBox="0 0 64 64"><path fill="#2ECC71" d="M32 0c17.7 0 32 14.3 32 32S49.7 64 32 64 0 49.7 0 32 14.3 0 32 0z" id="XMLID_16_"/><path fill="#FFF" d="M16 43h32v6H16zM43 27L32 40 21 27h7V12h8v15z"/></svg>';
+    link.addEventListener('click', function(ev) {
+      const canvas=document.getElementById("thisStringIsTheCanvasId");
+      link.href = canvas.toDataURL();
+      link.download = "mydiagram.png";
+    }, false);
+   document.getElementById("playground").appendChild(link);
   }
 
   componentDidUpdate() {
@@ -182,9 +190,6 @@ class Draw extends React.Component {
         className="playground"
         style={{ position: 'relative' }}
       >
-        <div style={{ height: '50px' }}>
-          {this.state.isDrawingMode ? 'Draw mode' : 'View Mode'}
-        </div>
         <div id="canvasContainer" ref={this.canvasContainer}>
           <canvas
             id="canvasInAPerfectWorld"
@@ -194,7 +199,7 @@ class Draw extends React.Component {
               display: this.state.isDrawingMode ? 'block' : 'none',
               border: 'black 1px solid',
               position: 'absolute',
-              top: '50px',
+              top: '0',
               zIndex: this.state.isDrawingMode ? 1 : 'unset'
             }}
             ref={this.canvas}
@@ -214,9 +219,22 @@ class Draw extends React.Component {
             ref={this.hiddenCanvas}
           />
         </div>
-        <a className="exportImg" onClick={this.onDownloadClick} href="/" style={{height:'80px'}}>
-          Download Image
-        </a>
+        <div style={{position: 'fixed', bottom: '10px', right: '10px', width: '80px', height: '80px', zIndex: 100}}>
+        {this.state.isDrawingMode ?
+        <svg id="icons" viewBox="0 0 48 48">
+          <polygon points="10.01 43.01 2 46 4.98 37.99 5 38 10 43 10.01 43.01" fill="#2d346a"/>
+          <polygon points="14.37 33.63 20.02 39.28 10.01 43.01 10 43 5 38 4.98 37.99 8.72 27.97 14.37 33.63" fill="#fff"/>
+            <path d="M41.11,18.19,20,39.28l-5.65-5.65L39,9l5.6,5.6a5.32,5.32,0,0,1-.59.68L41.12,18.2Z" fill="#ffc12e"/>
+            <path d="M29.81,6.89,32.74,4a5.4,5.4,0,0,1,.69-.59L39,9,14.37,33.63,8.72,28Z" fill="#ffc12e"/>
+            <path d="M46,10.41a6.84,6.84,0,0,1-1.36,4.16L39,9,33.43,3.36c2.85-2.16,7.17-1.72,10,1.16A8.39,8.39,0,0,1,46,10.41Z" fill="#c3cce9"/>
+            <polyline points="41.43 17.86 20.02 39.28 8.72 27.97 30.14 6.57" fill="none" stroke="#2d346a" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+            <path d="M29.81,6.89,32.74,4c2.81-2.81,7.62-2.55,10.74.57h0c3.12,3.12,3.38,7.93.57,10.73L41.12,18.2" fill="none" stroke="#2d346a" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+            <polyline points="20.02 39.28 2 46 8.72 27.97" fill="none" stroke="#2d346a" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+            <line x1="5" y1="38" x2="10" y2="43" fill="none" stroke="#2d346a" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/><line x1="33.43" y1="3.36" x2="44.68" y2="14.61" fill="none" stroke="#2d346a" strokeLinejoin="round" strokeWidth="2"/>
+            <line x1="14.37" y1="33.63" x2="39.04" y2="8.97" fill="none" stroke="#2d346a" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"/>
+        </svg> :
+        <svg id="Capa_1" viewBox="0 0 32 32"><g fill="#aaaaaa" id="eye"><path d="M16 4C7.164 4 0 15.844 0 15.844S7.164 28 16 28s16-12.156 16-12.156S24.836 4 16 4zm0 20a8 8 0 1 1 0-16 8 8 0 0 1 0 16z"/><circle cx="16" cy="16.016" r="4"/></g></svg>}
+        </div>
       </div>
     );
   }
