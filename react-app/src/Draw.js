@@ -106,7 +106,7 @@ class Draw extends React.Component {
     const hiddenCanvas = this.hiddenCanvas.current;
     hiddenContext = hiddenCanvas.getContext('2d');
     canvasContainer.addEventListener('mousedown', function(e) {
-      // if (!self.state.isDrawingMode) return;
+      if (!self.state.isDrawingMode) return;
       self.paint = true;
       addClick(e.pageX - this.offsetLeft, e.pageY - this.offsetTop);
       redraw();
@@ -121,7 +121,7 @@ class Draw extends React.Component {
     });
 
     canvasContainer.addEventListener('mouseup', function(e) {
-      // if (!self.state.isDrawingMode) return;
+      if (!self.state.isDrawingMode) return;
       self.paint = false;
       if (!!self.currentLine && self.currentLine.length > 0)
         self.obj.push(self.currentLine);
