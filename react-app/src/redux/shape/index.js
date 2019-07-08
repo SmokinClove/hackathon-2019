@@ -17,6 +17,7 @@ import { getIn } from './utils';
  *    [id: number]: {
  *      boundingRect: BoundingRect,
  *      name: string,
+ *      rawInput: Array<Array<Point>>
  *      suggestions: Array<string>
  *      state: FetchingState,
  *    }
@@ -46,6 +47,7 @@ export default (state = initialState, action) => {
       ...state,
       [action.payload.key]: {
         boundingRect: action.payload.boundingRect,
+        rawInput: action.payload.rawInput,
         state: FETCHING_STATES.FETCHING,
       }
     }

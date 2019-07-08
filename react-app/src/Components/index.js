@@ -105,28 +105,35 @@ export const functionMapping = {
 }
 
 export default class Component {
-  constructor() {
+  constructor(canvasId, width, height) {
     if (!canvas) {
-      canvas = new fabric.Canvas("thisStringIsTheCanvasId", {
-        height: window.innerHeight,
-        width: window.innerWidth
+      canvas = new fabric.Canvas(canvasId, {
+        height: width || window.innerHeight,
+        width: height || window.innerWidth
+			});
+
+			// display/hide controls on double click
+			// Should be able to create text everywhere, but if element is text or is selecting multiple elements, not likely user want to create text.
+			fabric.util.addListener(canvas.upperCanvasEl, 'dblclick', (e) => {
+				const activeObjects = canvas.getActiveObjects();
+				if (activeObjects.length) {
+					return;
+				}
+				this.addText(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop)
 			});
     }
-    // display/hide controls on double click
-    fabric.util.addListener(canvas.upperCanvasEl, 'dblclick', function(e) {
-			const activeObjects = canvas.getActiveObjects();
-			if (activeObjects.length) {
-				return;
-			}
-      canvas.add(new fabric.IText('Text', {
-        fontFamily: 'arial black',
-        fontWeight: 'normal',
-        left: e.pageX - this.offsetLeft,
-        top: e.pageY - this.offsetTop,
-        lineHeight: 1.1,
-      }));
-    });
-  }
+	}
+
+	addText(x, y) {
+		canvas.add(new fabric.IText('Text', {
+			fontFamily: 'arial black',
+			fontWeight: 'normal',
+			left: x,
+			top: y,
+			lineHeight: 1.1,
+		}));
+		return this;
+	}
 
 	/**
 	 *
@@ -242,7 +249,15 @@ export default class Component {
       left: x1,
       top: y1,
     }));
-  }
+	}
+
+	addRawLines(arrayOfArrayOfPoints) {
+		const arrayOfPaths = arrayOfArrayOfPoints.map(arrayOfPoints => new fabric.Path(`M ${arrayOfPoints.map(point => `${point.x} ${point.y}`).join(' L ')}`)
+			.set(inlineProperties));
+		const group = new fabric.Group(arrayOfPaths);
+		canvas.add(group);
+		return this;
+	}
 
 	addRightArrow(x1, y1, x2, y2) {
 		const group = createRightArrow(x1, y1, x2, y2);
@@ -279,13 +294,16 @@ export default class Component {
 
   remove() {
 		const activeObjects = canvas.getActiveObjects();
-		// HACKY don't delete text
-		if (activeObjects.length === 1 && activeObjects[0].fontFamily && activeObjects[0].selectionEnd) {
-			return; // Selecting a text element;
+		// HACKY don't delete text when editing text element
+		if (activeObjects.length === 1 && activeObjects[0].fontFamily && !activeObjects[0].hasControls) {
+			return;
 		}
 		activeObjects.forEach(obj => {
       canvas.remove(obj);
     });
     canvas.discardActiveObject().renderAll();
   }
+  deSelectAll() {
+    canvas.discardActiveObject().renderAll();
+	}
 }
