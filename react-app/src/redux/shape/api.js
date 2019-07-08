@@ -8,6 +8,7 @@ async function fetchShapeTypeAPI(id, arrayOfArrayOfPoint, data) {
   const response = await fetch(END_POINT, {
     method: 'POST',
     mode: 'cors',
+    credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
     },
