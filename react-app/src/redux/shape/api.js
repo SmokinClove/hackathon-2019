@@ -2,7 +2,7 @@ export {
   fetchShapeTypeAPI,
 }
 
-const END_POINT = 'http://tenzhiyang.com:8080/api/infer';
+const END_POINT = 'https://tenzhiyang.com:8080/api/infer';
 
 async function fetchShapeTypeAPI(id, arrayOfArrayOfPoint, data) {
   const response = await fetch(END_POINT, {
